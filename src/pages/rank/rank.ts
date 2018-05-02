@@ -22,6 +22,14 @@ export class RankPage {
     private actionSheetCtrl: ActionSheetController) {
   }
 
+  doRefresh(refresher) {
+    this.herokuProvider.getVote().subscribe((q) => {
+      this.votes = <any>q;
+      refresher.complete();
+    }, err => {
+    })
+  }
+
 
   ionViewDidLoad() {
     if (localStorage.getItem('voto')) {
