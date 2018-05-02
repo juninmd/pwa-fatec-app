@@ -1,8 +1,9 @@
 {
-  "name": "Ionic",
-  "short_name": "Ionic",
+  "name": "Eleições 2018",
+  "short_name": "Eleições",
   "start_url": "index.html",
   "display": "standalone",
+  "description": "Aplicativo desenvolvido para exemplificar um PWA.",
   "icons": [{
     "src": "assets/imgs/logo.png",
     "sizes": "512x512",

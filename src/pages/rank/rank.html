@@ -7,7 +7,16 @@
 <ion-header>
 
   <ion-navbar color="primary">
-    <ion-title>Resultado Votações</ion-title>
+    <ion-toolbar>
+      <ion-title>Resultado Votações</ion-title>
+
+      <ion-buttons end *ngIf='person != null'>
+        <button (click)="share()" ion-button icon-only color="royal">
+          <ion-icon name="share"></ion-icon>
+        </button>
+      </ion-buttons>
+    </ion-toolbar>
+
   </ion-navbar>
 
 </ion-header>
@@ -29,3 +38,13 @@
     </ion-row>
   </ion-grid>
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-col col-s6>
+      <button (click)='slack()' ion-button>Slack</button>
+    </ion-col>
+    <ion-col col-s6>
+      <button (click)='github()' ion-button>Github</button>
+    </ion-col>
+  </ion-toolbar>
+</ion-footer>

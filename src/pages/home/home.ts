@@ -10,7 +10,9 @@ export class HomePage {
 
   people = [];
 
-  constructor(private navCtrl: NavController, private alertCtrl: AlertController, private herokuProvider: HerokuProvider) {
+  constructor(private navCtrl: NavController,
+    private alertCtrl: AlertController,
+    private herokuProvider: HerokuProvider) {
 
     if (localStorage.getItem('voto') !== null) {
       this.navCtrl.setRoot('RankPage');
@@ -59,6 +61,7 @@ export class HomePage {
         {
           text: 'Concordo',
           handler: () => {
+            window.navigator.vibrate(200);
             this.herokuProvider.postVote(people).subscribe(q => {
               this.alertCtrl.create({
                 message: 'Voto computado com sucesso.',
@@ -66,13 +69,14 @@ export class HomePage {
                   {
                     text: 'OK',
                     handler: () => {
+
                     }
                   }]
               }).present()
 
-              this.navCtrl.setRoot('RankPage', people);
+              this.navCtrl.setRoot('RankPage');
 
-              localStorage.setItem('voto', 's');
+              localStorage.setItem('voto', JSON.stringify(people));
 
             }, err => {
               this.alertCtrl.create({

@@ -1,51 +1,95 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ActionSheetController } from 'ionic-angular';
 import { HerokuProvider } from '../../providers/heroku/heroku';
 
-/**
- * Generated class for the RankPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+
+declare var window;
 
 @IonicPage()
 @Component({
   selector: 'page-rank',
   templateUrl: 'rank.html',
 })
+
 export class RankPage {
 
   votes = [];
   person;
-
-  constructor(public navCtrl: NavController, public navParams: NavParams, private herokuProvider: HerokuProvider) {
-    if (localStorage.getItem('voto') === null) {
-      this.navCtrl.setRoot('HomePage');
-    }
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
+    private herokuProvider: HerokuProvider,
+    private alertCtrl: AlertController,
+    private actionSheetCtrl: ActionSheetController) {
   }
 
 
   ionViewDidLoad() {
-    this.person = this.navParams.get('people');
-    this.share();
+    if (localStorage.getItem('voto')) {
+      this.person = JSON.parse(localStorage.getItem('voto'));
+    }
+
     this.herokuProvider.getVote().subscribe((q) => {
-      this.votes = q;
+      this.votes = <any>q;
     }, err => {
     })
   }
 
   share() {
-    if (navigator.share && this.person) {
-      let url = document.location.href;
+    if (!this.person)
+      return;
 
-      navigator.share({
-        title: 'Votação Eleições',
-        text: `Acabo de votar em ${this.person.name}, vote você também!`,
-        url: url
-      })
-        .then(() => console.log('Successful share'))
-        .catch((error) => console.log('Error sharing', error));
+    if (window.navigator == null || window.navigator.share == null) {
+      this.alertCtrl.create({
+        message: 'Seu navegador não tem suporte para o compartilhamento :c.',
+        buttons: [
+          {
+            text: 'OK',
+            handler: () => {
+
+            }
+          }]
+      }).present();
+      return;
     }
+
+    let url = 'http://pwa-fatec.firebaseapp.com/';
+
+    window.navigator.share({
+      title: 'Votação Eleições',
+      text: `Acabo de votar em ${this.person.name}, vote você também!`,
+      url: url
+    })
+      .then(() => console.log('Successful share'))
+      .catch((error) => console.log('Error sharing', error));
+  }
+
+  github() {
+    window.location.href = 'https://github.com/juninmd/apresentacao-pwa';
+  }
+
+  slack() {
+
+    let actionSheet = this.actionSheetCtrl.create({
+      title: 'Slack',
+      buttons: [
+        {
+          text: 'Criar conta',
+          handler: () => {
+            window.location.href = 'https://goo.gl/HaH8D4';
+          }
+        }, {
+          text: 'Acessar',
+          handler: () => {
+            window.location.href = 'https://fatec-franca.slack.com';
+          }
+        }, {
+          text: 'Cancelar',
+          handler: () => {
+
+          }
+        }
+      ]
+    });
+    actionSheet.present();
   }
 }
