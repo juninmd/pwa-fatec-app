@@ -48,6 +48,10 @@ export class HomePage {
   }
 
   vote(people) {
+    if (localStorage.getItem('voto')) {
+      return;
+    }
+
     const confirm = this.alertCtrl.create({
       title: 'Confirme seu voto',
       message: `Certeza que deseja votar em ${people.name}`,
