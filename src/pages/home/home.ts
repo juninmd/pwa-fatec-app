@@ -56,7 +56,7 @@ export class HomePage {
 
     const confirm = this.alertCtrl.create({
       title: 'Confirme seu voto',
-      message: `Certeza que deseja votar em ${people.name}`,
+      message: `Certeza que deseja votar em ${people.name}?`,
       buttons: [
         {
           text: 'Discordo',
@@ -67,32 +67,32 @@ export class HomePage {
         {
           text: 'Concordo',
           handler: () => {
-            const android = this.plt.is('android')
-            if (android) {
-              window.navigator.vibrate(200);
+            try {
+              const android = this.plt.is('android')
+              if (android) {
+                window.navigator.vibrate(200);
+              }
+
+              this.herokuProvider.postVote(people).subscribe(q => {
+                this.alertCtrl.create({
+                  message: 'Voto computado com sucesso.',
+                  buttons: [
+                    {
+                      text: 'OK',
+                      handler: () => {
+                        this.navCtrl.setRoot('RankPage');
+                        localStorage.setItem('voto', JSON.stringify(people));
+                      }
+                    }]
+                }).present()
+              }, err => {
+                this.alertCtrl.create({
+                  message: 'Deu algum erro D:'
+                }).present()
+              });
+            } catch (error) {
+              alert(error);
             }
-
-            this.herokuProvider.postVote(people).subscribe(q => {
-              this.alertCtrl.create({
-                message: 'Voto computado com sucesso.',
-                buttons: [
-                  {
-                    text: 'OK',
-                    handler: () => {
-
-                    }
-                  }]
-              }).present()
-
-              this.navCtrl.setRoot('RankPage');
-
-              localStorage.setItem('voto', JSON.stringify(people));
-
-            }, err => {
-              this.alertCtrl.create({
-                message: 'Deu algum erro D:'
-              }).present()
-            });
           }
         }
       ]
