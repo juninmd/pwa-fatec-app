@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
 import { HerokuProvider } from '../../providers/heroku/heroku';
+import { Platform } from 'ionic-angular';
 
 @Component({
   selector: 'page-home',
@@ -12,7 +13,8 @@ export class HomePage {
 
   constructor(private navCtrl: NavController,
     private alertCtrl: AlertController,
-    private herokuProvider: HerokuProvider) {
+    private herokuProvider: HerokuProvider,
+    private plt: Platform) {
 
     if (localStorage.getItem('voto') !== null) {
       this.navCtrl.setRoot('RankPage');
@@ -65,7 +67,11 @@ export class HomePage {
         {
           text: 'Concordo',
           handler: () => {
-            window.navigator.vibrate(200);
+            const android = this.plt.is('android')
+            if (android) {
+              window.navigator.vibrate(200);
+            }
+
             this.herokuProvider.postVote(people).subscribe(q => {
               this.alertCtrl.create({
                 message: 'Voto computado com sucesso.',
